@@ -1,0 +1,5 @@
+<ul>
+  @for (ticket of tickets; track ticket.id) {
+    <li>{{ ticket.titre }} - priorité {{ ticket.priorite }} - {{ ticket.statut }}</li>
+  }
+</ul>
