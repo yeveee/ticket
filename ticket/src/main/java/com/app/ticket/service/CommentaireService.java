@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.ticket.dto.CommentaireDTO;
 import com.app.ticket.entity.Commentaire;
@@ -42,14 +43,14 @@ public CommentaireDTO findById(Long id) {
 private CommentaireDTO toDTO(Commentaire commentaire) {
     return new CommentaireDTO(commentaire.getId(), commentaire.getTexte(), commentaire.getAuteur().getId(), commentaire.getTicket().getId());
 }
-
+@Transactional
 public CommentaireDTO create(CommentaireDTO dto) {
     Ticket ticket = ticketRepository.findById(dto.getTicketId()).
     orElseThrow(() -> new RuntimeException("Tickets introuvable"));
     Utilisateur auteur = utilisateurRepository.findById(dto.getAuteurId()).
     orElseThrow(() -> new RuntimeException("Auteurs introuvable"));
     Commentaire commentaire = new Commentaire();
-    commentaire.setTicket(ticket);;
+    commentaire.setTicket(ticket);
     commentaire.setTexte(dto.getTexte());
     commentaire.setAuteur(auteur);
     Commentaire saved = commentaireRepository.save(commentaire);

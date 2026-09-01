@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.ticket.dto.TicketDTO;
 import com.app.ticket.entity.Projet;
@@ -28,7 +29,7 @@ public class TicketService {
     }
 
     public List<TicketDTO> findAll() {
-        return ticketRepository.findAll().stream()
+        return ticketRepository.findAllWithRelations().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
 }
@@ -42,7 +43,7 @@ public TicketDTO findById(Long id) {
 public void delete(Long id) {
     ticketRepository.deleteById(id);
 }
-
+    @Transactional
     public TicketDTO create(TicketDTO dto) {
         Utilisateur auteur = utilisateurRepository.findById(dto.getAuteurId()).
         orElseThrow(() -> new RuntimeException("Auteur introuvable"));
