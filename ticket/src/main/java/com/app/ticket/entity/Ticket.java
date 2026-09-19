@@ -31,7 +31,7 @@ public class Ticket {
 
     private int priorite;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) 
     private Statut statut;
 
     @ManyToOne
