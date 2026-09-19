@@ -1,11 +1,27 @@
-<a routerLink="/tickets/new">+ Nouveau ticket</a>
+<app-nav></app-nav>
 
-<ul>
-  @for (ticket of tickets; track ticket.id) {
-    <li>
-      {{ ticket.titre }} - priorité {{ ticket.priorite }} - {{ ticket.statut }}
-      <a [routerLink]="['/tickets', ticket.id, 'edit']">Modifier</a>
-      <button (click)="deleteTicket(ticket.id)">Supprimer</button>
-    </li>
+<div class="ticket-list-page">
+  <div class="ticket-list-header">
+    <h1>Tickets</h1>
+    <a class="new-ticket-link" routerLink="/tickets/new">+ Nouveau ticket</a>
+  </div>
+
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
   }
-</ul>
+
+  <div class="ticket-cards">
+    @for (ticket of tickets; track ticket.id) {
+      <div class="card ticket-card">
+        <div class="ticket-info">
+          <strong>{{ ticket.titre }}</strong>
+          <span class="ticket-meta">Priorité {{ ticket.priorite }} · {{ ticket.statut }}</span>
+        </div>
+        <div class="ticket-actions">
+          <a [routerLink]="['/tickets', ticket.id, 'edit']">Modifier</a>
+          <button class="danger" (click)="deleteTicket(ticket.id)">Supprimer</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

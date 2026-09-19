@@ -22,7 +22,7 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value as any).subscribe({
       next: (response) => {
         localStorage.setItem('token', response.token);
-        this.router.navigate(['/tickets']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         console.error('Echec de connexion', err)

@@ -1,19 +1,65 @@
-<h2>{{ ticketId ? 'Modifier le ticket' : 'Nouveau ticket' }}</h2>
+<div class="ticket-form-page">
+  <form class="card" [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+    <h2>{{ ticketId ? 'Modifier le ticket' : 'Nouveau ticket' }}</h2>
 
-<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
-  <input formControlName="titre" placeholder="Titre">
-  <textarea formControlName="description" placeholder="Description"></textarea>
-  <input formControlName="priorite" type="number" placeholder="Priorité (1-5)">
+    <label>
+      Titre
+      <input formControlName="titre">
+    </label>
 
-  <select formControlName="statut">
-    <option value="OUVERT">Ouvert</option>
-    <option value="EN_COURS">En cours</option>
-    <option value="RESOLU">Résolu</option>
-  </select>
+    <label>
+      Description
+      <textarea formControlName="description"></textarea>
+    </label>
 
-  <input formControlName="projetId" type="number" placeholder="ID Projet">
-  <input formControlName="auteurId" type="number" placeholder="ID Auteur">
-  <input formControlName="assigneeId" type="number" placeholder="ID Assigné">
+    <label>
+      Priorité (1-5)
+      <input formControlName="priorite" type="number" min="1" max="5">
+    </label>
 
-  <button type="submit">{{ ticketId ? 'Modifier' : 'Créer' }}</button>
-</form>
+    <label>
+      Statut
+      <select formControlName="statut">
+        <option value="OUVERT">Ouvert</option>
+        <option value="EN_COURS">En cours</option>
+        <option value="RESOLU">Résolu</option>
+      </select>
+    </label>
+
+    <label>
+      Projet
+      <select formControlName="projetId">
+        <option [value]="0" disabled>Choisir un projet</option>
+        @for (projet of projets; track projet.id) {
+          <option [value]="projet.id">{{ projet.nom }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Auteur
+      <select formControlName="auteurId">
+        <option [value]="0" disabled>Choisir un auteur</option>
+        @for (utilisateur of utilisateurs; track utilisateur.id) {
+          <option [value]="utilisateur.id">{{ utilisateur.nom }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Assigné
+      <select formControlName="assigneeId">
+        <option [value]="0" disabled>Choisir un assigné</option>
+        @for (utilisateur of utilisateurs; track utilisateur.id) {
+          <option [value]="utilisateur.id">{{ utilisateur.nom }}</option>
+        }
+      </select>
+    </label>
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <button type="submit">{{ ticketId ? 'Modifier' : 'Créer' }}</button>
+  </form>
+</div>

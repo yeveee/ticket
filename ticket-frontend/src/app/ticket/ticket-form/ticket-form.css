@@ -1,6 +1,21 @@
-form {
+.ticket-form-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticket-form-page form {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-width: 400px;
+  width: 360px;
+}
+
+.ticket-form-page label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
 }
