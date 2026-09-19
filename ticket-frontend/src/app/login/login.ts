@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth';
 
 
@@ -15,13 +16,13 @@ export class LoginComponent {
     motDePasse: new FormControl('', [Validators.required])
   });
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     this.authService.login(this.loginForm.value as any).subscribe({
       next: (response) => {
         localStorage.setItem('token', response.token);
-        console.log('Connecté !', response.token);
+        this.router.navigate(['/tickets']);
       },
       error: (err) => {
         console.error('Echec de connexion', err)
