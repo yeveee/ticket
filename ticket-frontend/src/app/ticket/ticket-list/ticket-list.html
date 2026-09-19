@@ -1,5 +1,11 @@
+<a routerLink="/tickets/new">+ Nouveau ticket</a>
+
 <ul>
   @for (ticket of tickets; track ticket.id) {
-    <li>{{ ticket.titre }} - priorité {{ ticket.priorite }} - {{ ticket.statut }}</li>
+    <li>
+      {{ ticket.titre }} - priorité {{ ticket.priorite }} - {{ ticket.statut }}
+      <a [routerLink]="['/tickets', ticket.id, 'edit']">Modifier</a>
+      <button (click)="deleteTicket(ticket.id)">Supprimer</button>
+    </li>
   }
 </ul>

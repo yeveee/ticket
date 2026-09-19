@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +37,11 @@ public class TicketController {
     @PostMapping
     public TicketDTO create(@RequestBody TicketDTO dto) {
         return ticketService.create(dto);
+    }
+
+    @PutMapping("/{id}")
+    public TicketDTO update(@PathVariable Long id, @RequestBody TicketDTO dto) {
+        return ticketService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")

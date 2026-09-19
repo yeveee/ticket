@@ -1,0 +1,19 @@
+<h2>{{ ticketId ? 'Modifier le ticket' : 'Nouveau ticket' }}</h2>
+
+<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+  <input formControlName="titre" placeholder="Titre">
+  <textarea formControlName="description" placeholder="Description"></textarea>
+  <input formControlName="priorite" type="number" placeholder="Priorité (1-5)">
+
+  <select formControlName="statut">
+    <option value="OUVERT">Ouvert</option>
+    <option value="EN_COURS">En cours</option>
+    <option value="RESOLU">Résolu</option>
+  </select>
+
+  <input formControlName="projetId" type="number" placeholder="ID Projet">
+  <input formControlName="auteurId" type="number" placeholder="ID Auteur">
+  <input formControlName="assigneeId" type="number" placeholder="ID Assigné">
+
+  <button type="submit">{{ ticketId ? 'Modifier' : 'Créer' }}</button>
+</form>

@@ -64,6 +64,30 @@ public void delete(Long id) {
 
     }
 
+    @Transactional
+    public TicketDTO update(Long id, TicketDTO dto) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket introuvable"));
+
+        Utilisateur auteur = utilisateurRepository.findById(dto.getAuteurId())
+                .orElseThrow(() -> new RuntimeException("Auteur introuvable"));
+        Utilisateur assignee = utilisateurRepository.findById(dto.getAssigneeId())
+                .orElseThrow(() -> new RuntimeException("Assignee introuvable"));
+        Projet projet = projetRepository.findById(dto.getProjetId())
+                .orElseThrow(() -> new RuntimeException("Projet introuvable"));
+
+        ticket.setTitre(dto.getTitre());
+        ticket.setDescription(dto.getDescription());
+        ticket.setPriorite(dto.getPriorite());
+        ticket.setStatut(Statut.valueOf(dto.getStatut()));
+        ticket.setProjet(projet);
+        ticket.setAuteur(auteur);
+        ticket.setAssignee(assignee);
+        // pas de save() : ticket est managed, Hibernate flush l'UPDATE tout seul
+
+        return toDTO(ticket);
+    }
+
     private TicketDTO toDTO(Ticket ticket) {
     return new TicketDTO(ticket.getId(), 
     ticket.getTitre(), 
