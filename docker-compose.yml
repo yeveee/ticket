@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ticket_app
+      POSTGRES_USER: ticket
+      POSTGRES_PASSWORD: ticket
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ticket -d ticket_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./ticket
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ticket_app
+      SPRING_DATASOURCE_USERNAME: ticket
+      SPRING_DATASOURCE_PASSWORD: ticket
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./ticket-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
