@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.app.ticket.domain.event.TicketCreatedEvent;
 import com.app.ticket.dto.TicketDTO;
 import com.app.ticket.entity.Projet;
 import com.app.ticket.entity.Ticket;
 import com.app.ticket.entity.Utilisateur;
 import com.app.ticket.enums.Statut;
 import com.app.ticket.port.in.TicketUseCase;
+import com.app.ticket.port.out.TicketEventPublisherPort;
 import com.app.ticket.port.out.TicketRepositoryPort;
 import com.app.ticket.repository.ProjetRepository;
 import com.app.ticket.repository.UtilisateurRepository;
@@ -22,11 +24,14 @@ public class TicketService implements TicketUseCase {
     private final TicketRepositoryPort ticketRepositoryPort;
     private final UtilisateurRepository utilisateurRepository;
     private final ProjetRepository projetRepository;
+    private final TicketEventPublisherPort ticketEventPublisherPort;
 
-    public TicketService(TicketRepositoryPort ticketRepositoryPort, UtilisateurRepository utilisateurRepository, ProjetRepository projetRepository) {
+    public TicketService(TicketRepositoryPort ticketRepositoryPort, UtilisateurRepository utilisateurRepository,
+            ProjetRepository projetRepository, TicketEventPublisherPort ticketEventPublisherPort) {
         this.ticketRepositoryPort = ticketRepositoryPort;
         this.utilisateurRepository = utilisateurRepository;
         this.projetRepository = projetRepository;
+        this.ticketEventPublisherPort = ticketEventPublisherPort;
     }
 
     @Override
@@ -66,6 +71,10 @@ public class TicketService implements TicketUseCase {
         ticket.setAssignee(assignee);
 
         Ticket saved = ticketRepositoryPort.save(ticket);
+
+        ticketEventPublisherPort.publishTicketCreated(
+                new TicketCreatedEvent(saved.getId(), saved.getTitre(), saved.getAuteur().getId()));
+
         return toDTO(saved);
     }
 

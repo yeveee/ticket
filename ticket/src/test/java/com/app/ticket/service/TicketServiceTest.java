@@ -1,8 +1,10 @@
 package com.app.ticket.service;
 
+import com.app.ticket.domain.event.TicketCreatedEvent;
 import com.app.ticket.dto.TicketDTO;
 import com.app.ticket.entity.*;
 import com.app.ticket.enums.Statut;
+import com.app.ticket.port.out.TicketEventPublisherPort;
 import com.app.ticket.port.out.TicketRepositoryPort;
 import com.app.ticket.repository.ProjetRepository;
 import com.app.ticket.repository.UtilisateurRepository;
@@ -27,6 +29,8 @@ class TicketServiceTest {
     private ProjetRepository projetRepository;
     @Mock
     private UtilisateurRepository utilisateurRepository;
+    @Mock
+    private TicketEventPublisherPort ticketEventPublisherPort;
 
     @InjectMocks
     private TicketService ticketService;
@@ -92,5 +96,36 @@ class TicketServiceTest {
         // Assert
         assertEquals(1, results.size());
         assertEquals("Bug sur le login", results.get(0).getTitre());
+    }
+
+    @Test
+    void should_publish_event_when_ticket_created() {
+        // Arrange
+        TicketDTO dto = new TicketDTO(null, "Nouveau bug", "desc", 2, "OUVERT", 1L, 1L, 1L);
+
+        Utilisateur auteur = new Utilisateur();
+        auteur.setId(1L);
+        Projet projet = new Projet();
+        projet.setId(1L);
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(auteur));
+        when(projetRepository.findById(1L)).thenReturn(Optional.of(projet));
+
+        Ticket saved = new Ticket();
+        saved.setId(42L);
+        saved.setTitre("Nouveau bug");
+        saved.setPriorite(2);
+        saved.setStatut(Statut.OUVERT);
+        saved.setProjet(projet);
+        saved.setAuteur(auteur);
+        saved.setAssignee(auteur);
+        when(ticketRepository.save(any(Ticket.class))).thenReturn(saved);
+
+        // Act
+        ticketService.create(dto);
+
+        // Assert
+        verify(ticketEventPublisherPort).publishTicketCreated(
+                new TicketCreatedEvent(42L, "Nouveau bug", 1L));
     }
 }
