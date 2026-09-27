@@ -14,4 +14,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT t FROM Ticket t JOIN FETCH t.projet JOIN FETCH t.auteur JOIN FETCH t.assignee")
 List<Ticket> findAllWithRelations();
+
+    List<Ticket> findByTitreContainingIgnoreCase(String keyword);
 }

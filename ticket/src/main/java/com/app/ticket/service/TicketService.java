@@ -29,9 +29,7 @@ public class TicketService {
     }
 
     public List<TicketDTO> findAll() {
-        return ticketRepository.findAllWithRelations().stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        return toDTOList(ticketRepository.findAllWithRelations());
 }
 
 public TicketDTO findById(Long id) {
@@ -86,6 +84,16 @@ public void delete(Long id) {
         // pas de save() : ticket est managed, Hibernate flush l'UPDATE tout seul
 
         return toDTO(ticket);
+    }
+
+    public List<TicketDTO> search(String keyword) {
+        return toDTOList(ticketRepository.findByTitreContainingIgnoreCase(keyword));
+    }
+
+    private List<TicketDTO> toDTOList(List<Ticket> tickets) {
+        return tickets.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     private TicketDTO toDTO(Ticket ticket) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.ticket.dto.TicketDTO;
@@ -27,6 +28,11 @@ public class TicketController {
     @GetMapping
     public List<TicketDTO> findAll() {
         return ticketService.findAll();
+    }
+
+    @GetMapping("/search")
+    public List<TicketDTO> search(@RequestParam String q) {
+        return ticketService.search(q);
     }
 
     @GetMapping("/{id}")

@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,5 +65,32 @@ class TicketServiceTest {
         when(ticketRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> ticketService.findById(999L));
+    }
+
+    @Test
+    void should_return_tickets_matching_keyword() {
+        // Arrange
+        Projet projet = new Projet();
+        projet.setId(1L);
+        Utilisateur user = new Utilisateur();
+        user.setId(1L);
+
+        Ticket matching = new Ticket();
+        matching.setId(1L);
+        matching.setTitre("Bug sur le login");
+        matching.setPriorite(2);
+        matching.setStatut(Statut.OUVERT);
+        matching.setProjet(projet);
+        matching.setAuteur(user);
+        matching.setAssignee(user);
+
+        when(ticketRepository.findByTitreContainingIgnoreCase("login")).thenReturn(List.of(matching));
+
+        // Act
+        List<TicketDTO> results = ticketService.search("login");
+
+        // Assert
+        assertEquals(1, results.size());
+        assertEquals("Bug sur le login", results.get(0).getTitre());
     }
 }
