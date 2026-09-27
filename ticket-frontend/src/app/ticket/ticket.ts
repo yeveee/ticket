@@ -17,7 +17,7 @@ export interface Ticket {
   providedIn: 'root',
 })
 export class TicketService {
-  private apiUrl = 'http://localhost:8080/api/tickets';
+  private apiUrl = '/api/tickets';
 
   constructor(private http: HttpClient) {}
 

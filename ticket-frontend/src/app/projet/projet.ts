@@ -12,7 +12,7 @@ export interface Projet {
   providedIn: 'root',
 })
 export class ProjetService {
-  private apiUrl = 'http://localhost:8080/api/projets';
+  private apiUrl = '/api/projets';
 
   constructor(private http: HttpClient) {}
 

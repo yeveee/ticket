@@ -30,7 +30,7 @@ describe('TicketService', () => {
       expect(tickets[0].titre).toBe('Bug');
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/tickets');
+    const req = httpMock.expectOne('/api/tickets');
     expect(req.request.method).toBe('GET');
     req.flush([
       { id: 1, titre: 'Bug', description: '', priorite: 1, statut: 'OUVERT', projetId: 1, auteurId: 1, assigneeId: 1 }
@@ -40,7 +40,7 @@ describe('TicketService', () => {
   it('should DELETE a ticket by id', () => {
     service.delete(1).subscribe();
 
-    const req = httpMock.expectOne('http://localhost:8080/api/tickets/1');
+    const req = httpMock.expectOne('/api/tickets/1');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });
