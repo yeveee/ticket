@@ -3,7 +3,7 @@ package com.app.ticket.service;
 import com.app.ticket.dto.TicketDTO;
 import com.app.ticket.entity.*;
 import com.app.ticket.enums.Statut;
-import com.app.ticket.repository.TicketRepository;
+import com.app.ticket.port.out.TicketRepositoryPort;
 import com.app.ticket.repository.ProjetRepository;
 import com.app.ticket.repository.UtilisateurRepository;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class TicketServiceTest {
 
     @Mock
-    private TicketRepository ticketRepository;
+    private TicketRepositoryPort ticketRepository;
     @Mock
     private ProjetRepository projetRepository;
     @Mock

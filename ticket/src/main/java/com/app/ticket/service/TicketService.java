@@ -11,43 +11,51 @@ import com.app.ticket.entity.Projet;
 import com.app.ticket.entity.Ticket;
 import com.app.ticket.entity.Utilisateur;
 import com.app.ticket.enums.Statut;
+import com.app.ticket.port.in.TicketUseCase;
+import com.app.ticket.port.out.TicketRepositoryPort;
 import com.app.ticket.repository.ProjetRepository;
-import com.app.ticket.repository.TicketRepository;
 import com.app.ticket.repository.UtilisateurRepository;
 
 @Service
-public class TicketService {
-    
-    private final TicketRepository ticketRepository;
+public class TicketService implements TicketUseCase {
+
+    private final TicketRepositoryPort ticketRepositoryPort;
     private final UtilisateurRepository utilisateurRepository;
     private final ProjetRepository projetRepository;
 
-    public TicketService(TicketRepository ticketRepository, UtilisateurRepository utilisateurRepository, ProjetRepository projetRepository) {
-        this.ticketRepository = ticketRepository;
+    public TicketService(TicketRepositoryPort ticketRepositoryPort, UtilisateurRepository utilisateurRepository, ProjetRepository projetRepository) {
+        this.ticketRepositoryPort = ticketRepositoryPort;
         this.utilisateurRepository = utilisateurRepository;
         this.projetRepository = projetRepository;
     }
 
+    @Override
     public List<TicketDTO> findAll() {
-        return toDTOList(ticketRepository.findAllWithRelations());
-}
+        return toDTOList(ticketRepositoryPort.findAllWithRelations());
+    }
 
-public TicketDTO findById(Long id) {
-    Ticket ticket = ticketRepository.findById(id).
-    orElseThrow(() -> new RuntimeException("Ticket introuvable"));
-    return toDTO(ticket);
-}
+    @Override
+    public TicketDTO findById(Long id) {
+        Ticket ticket = ticketRepositoryPort.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket introuvable"));
+        return toDTO(ticket);
+    }
 
-public void delete(Long id) {
-    ticketRepository.deleteById(id);
-}
+    @Override
+    public void delete(Long id) {
+        ticketRepositoryPort.deleteById(id);
+    }
+
+    @Override
     @Transactional
     public TicketDTO create(TicketDTO dto) {
-        Utilisateur auteur = utilisateurRepository.findById(dto.getAuteurId()).
-        orElseThrow(() -> new RuntimeException("Auteur introuvable"));
-        Utilisateur assignee = utilisateurRepository.findById(dto.getAssigneeId()).
-        orElseThrow(() -> new RuntimeException("Assignee introuvable"));
-        Projet projet = projetRepository.findById(dto.getProjetId()).orElseThrow(() -> new RuntimeException("Projet introuvable"));
+        Utilisateur auteur = utilisateurRepository.findById(dto.getAuteurId())
+                .orElseThrow(() -> new RuntimeException("Auteur introuvable"));
+        Utilisateur assignee = utilisateurRepository.findById(dto.getAssigneeId())
+                .orElseThrow(() -> new RuntimeException("Assignee introuvable"));
+        Projet projet = projetRepository.findById(dto.getProjetId())
+                .orElseThrow(() -> new RuntimeException("Projet introuvable"));
+
         Ticket ticket = new Ticket();
         ticket.setTitre(dto.getTitre());
         ticket.setDescription(dto.getDescription());
@@ -56,15 +64,15 @@ public void delete(Long id) {
         ticket.setProjet(projet);
         ticket.setAuteur(auteur);
         ticket.setAssignee(assignee);
-        Ticket saved = ticketRepository.save(ticket);
+
+        Ticket saved = ticketRepositoryPort.save(ticket);
         return toDTO(saved);
-
-
     }
 
+    @Override
     @Transactional
     public TicketDTO update(Long id, TicketDTO dto) {
-        Ticket ticket = ticketRepository.findById(id)
+        Ticket ticket = ticketRepositoryPort.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket introuvable"));
 
         Utilisateur auteur = utilisateurRepository.findById(dto.getAuteurId())
@@ -86,8 +94,9 @@ public void delete(Long id) {
         return toDTO(ticket);
     }
 
+    @Override
     public List<TicketDTO> search(String keyword) {
-        return toDTOList(ticketRepository.findByTitreContainingIgnoreCase(keyword));
+        return toDTOList(ticketRepositoryPort.findByTitreContainingIgnoreCase(keyword));
     }
 
     private List<TicketDTO> toDTOList(List<Ticket> tickets) {
@@ -97,15 +106,13 @@ public void delete(Long id) {
     }
 
     private TicketDTO toDTO(Ticket ticket) {
-    return new TicketDTO(ticket.getId(), 
-    ticket.getTitre(), 
-    ticket.getDescription(), 
-    ticket.getPriorite(), 
-    ticket.getStatut().name(), 
-    ticket.getProjet().getId(),
-    ticket.getAuteur().getId(), 
-    ticket.getAssignee().getId());
-}
-
-    
+        return new TicketDTO(ticket.getId(),
+                ticket.getTitre(),
+                ticket.getDescription(),
+                ticket.getPriorite(),
+                ticket.getStatut().name(),
+                ticket.getProjet().getId(),
+                ticket.getAuteur().getId(),
+                ticket.getAssignee().getId());
+    }
 }

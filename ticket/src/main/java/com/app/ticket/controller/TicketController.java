@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.ticket.dto.TicketDTO;
-import com.app.ticket.service.TicketService;
+import com.app.ticket.port.in.TicketUseCase;
 
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
-    
-    private final TicketService ticketService;
 
-    public TicketController(TicketService ticketService) {
+    private final TicketUseCase ticketService;
+
+    public TicketController(TicketUseCase ticketService) {
         this.ticketService = ticketService;
     }
 
